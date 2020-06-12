@@ -1,0 +1,15 @@
+{
+    "addons": [],
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        },
+        {
+            "url": "https://github.com/SFDigitalServices/heroku-google-application-credentials-buildpack"
+        }
+    ],
+    "env": {},
+    "formation": {},
+    "name": "spreadsheets-microservice",
+    "stack": "heroku-18"
+}
