@@ -117,3 +117,6 @@ dmypy.json
 
 # Visual Studio
 .vscode/
+
+# Google credentials file
+google-credentials.json
