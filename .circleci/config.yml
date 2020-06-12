@@ -44,6 +44,12 @@ jobs:
           command: |
             pipenv run pre-commit run --all-files
       
+      # create a fake credentials file
+      - run:
+          name: create fake credentials file
+          command: |
+            touch google-credentials.json
+      
       - run:
           name: start gunicorn
           command: |
