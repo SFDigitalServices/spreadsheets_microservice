@@ -5,7 +5,7 @@
             "url": "heroku/python"
         },
         {
-            "url": "https://github.com/gerywahyunugraha/heroku-google-application-credentials-buildpack"
+            "url": "https://github.com/SFDigitalServices/heroku-google-application-credentials-buildpack"
         }
     ],
     "env": {},
