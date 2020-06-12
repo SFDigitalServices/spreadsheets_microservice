@@ -1,4 +1,4 @@
-# spreadsheets_microservice.py [![CircleCI](https://badgen.net/circleci/github/SFDigitalServices/spreadsheets_microservice/master)](https://circleci.com/gh/SFDigitalServices/spreadsheets_microservice) [![Coverage Status](https://coveralls.io/repos/github/SFDigitalServices/spreadsheets_microservice/badge.svg?branch=master)](https://coveralls.io/github/SFDigitalServices/spreadsheets_microservice?branch=master)
+# spreadsheets_microservice.py [![CircleCI](https://badgen.net/circleci/github/SFDigitalServices/spreadsheets_microservice/main)](https://circleci.com/gh/SFDigitalServices/spreadsheets_microservice) [![Coverage Status](https://coveralls.io/repos/github/SFDigitalServices/spreadsheets_microservice/badge.svg?branch=main)](https://coveralls.io/github/SFDigitalServices/spreadsheets_microservice?branch=main)
 Microservice for interacting with online spreadsheets
 
 ## Get started
