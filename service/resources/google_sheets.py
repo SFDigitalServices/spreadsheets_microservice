@@ -57,6 +57,7 @@ class Rows():
         """
             append a new row
         """
+        request_params_json = None
         try:
             request_body = _req.bounded_stream.read()
             request_params_json = json.loads(request_body)
@@ -77,6 +78,9 @@ class Rows():
 
         except Exception as err:    # pylint: disable=broad-except
             err_msg = "{0}".format(err)
+            print("Encountered error:")
+            print(err_msg)
+            print(json.dumps(request_params_json))
             resp.body = json.dumps(jsend.error(err_msg))
             resp.status = falcon.HTTP_500
 
