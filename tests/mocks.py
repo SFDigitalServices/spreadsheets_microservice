@@ -18,3 +18,11 @@ ROW_PATCH_PARAMS = {
         "C": "world"
         }
 }
+
+ROW_GET_PARAMS = {
+    "spreadsheet_key": "1234567",
+    "worksheet_title": "Tab1",
+    "id_column_label": "A"
+}
+
+ROW_VALUES = ['A', 'B', 'C', 'D', 'E']
