@@ -23,7 +23,7 @@ Open with cURL or web browser
 
 ## Development 
 Auto-reload on code changes
-> $ pipenv run gunicorn --reload 'service.microservice:start_service()'
+> $ ACCESS_KEY=123456 pipenv run gunicorn --reload 'service.microservice:start_service()'
 
 Code coverage command with missing statement line numbers  
 > $ pipenv run python -m pytest --cov=service tests/ --cov-report term-missing
