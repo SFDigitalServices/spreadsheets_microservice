@@ -1,15 +1,14 @@
 # pylint: disable=redefined-outer-name
 """Tests for microservice"""
 import json
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 import jsend
 import pytest
 from falcon import testing
 import gspread
 import mocks
 import service.microservice
-from service.resources.google_sheets import validate_post_params, validate_patch_params,\
-    validate_get_params
+from service.resources.google_sheets import Rows, Row
 
 CLIENT_HEADERS = {
     "ACCESS_KEY": "1234567"
@@ -44,38 +43,50 @@ def test_default_error(client, mock_env_access_key):
 def test_google_sheet_spreadsheet_params_validation():
     """ Test validate_spreadsheet_params """
     with pytest.raises(Exception):
-        validate_post_params({
+        Rows.validate_post_params({
             k:v for k, v in mocks.ROW_POST_PARAMS.items() if k != 'spreadsheet_key'
         })
 
     with pytest.raises(Exception):
-        validate_post_params({
+        Rows.validate_post_params({
             k:v for k, v in mocks.ROW_POST_PARAMS.items() if k != 'worksheet_title'
         })
 
-def test_google_sheet_post_validation():
-    """Test post parameters validation"""
+def test_google_sheet_rows_post_validation():
+    """Test rows post parameters validation"""
     with pytest.raises(Exception):
-        validate_post_params({
+        Rows.validate_post_params({
             k:v for k, v in mocks.ROW_POST_PARAMS.items() if k != 'row_values'
         })
 
-def test_google_sheet_patch_validation():
-    """Test patch parameters validation"""
+def test_google_sheet_rows_get_validation():
+    """Test rows get parameter validation"""
     with pytest.raises(Exception):
-        validate_patch_params({
+        Rows.validate_get_params({
+            k:v for k, v in mocks.ROWS_GET_PARAMS.items() if k != 'column_label'
+        })
+
+    with pytest.raises(Exception):
+        Rows.validate_get_params({
+            k:v for k, v in mocks.ROWS_GET_PARAMS.items() if k != 'value'
+        })
+
+def test_google_sheet_row_patch_validation():
+    """Test row patch parameters validation"""
+    with pytest.raises(Exception):
+        Row.validate_patch_params({
             k:v for k, v in mocks.ROW_PATCH_PARAMS.items() if k != 'id_column_label'
         })
 
     with pytest.raises(Exception):
-        validate_patch_params({
+        Row.validate_patch_params({
             k:v for k, v in mocks.ROW_PATCH_PARAMS.items() if k != 'label_value_map'
         })
 
-def test_google_sheet_get_validation():
-    """Test get parameter validation"""
+def test_google_sheet_row_get_validation():
+    """Test row get parameter validation"""
     with pytest.raises(Exception):
-        validate_get_params({
+        Row.validate_get_params({
             k:v for k, v in mocks.ROW_GET_PARAMS.items() if k != 'id_column_label'
         })
 
@@ -147,7 +158,7 @@ def test_google_sheet_get(mock_env_access_key, client):
         mock_client.return_value.open_by_key.return_value.worksheet.return_value.row_values.return_value = mocks.ROW_VALUES #pylint: disable=line-too-long
         resp = client.simulate_get(
             '/rows/23',
-            json=mocks.ROW_GET_PARAMS
+            params=mocks.ROW_GET_PARAMS
         )
         assert resp.status_code == 200
 
@@ -156,7 +167,7 @@ def test_google_sheet_get(mock_env_access_key, client):
         mock_client.return_value.open_by_key.return_value.worksheet.return_value.find.side_effect = gspread.exceptions.CellNotFound #pylint: disable=line-too-long
         resp = client.simulate_get(
             '/rows/007',
-            json=mocks.ROW_GET_PARAMS
+            params=mocks.ROW_GET_PARAMS
         )
         assert resp.status_code == 404
 
@@ -165,6 +176,46 @@ def test_google_sheet_get(mock_env_access_key, client):
         mock_client.side_effect = Exception('Error in gspread')
         resp = client.simulate_get(
             '/rows/007',
-            json=mocks.ROW_GET_PARAMS
+            params=mocks.ROW_GET_PARAMS
+        )
+        assert resp.status_code == 500
+
+def test_google_sheet_rows_get(mock_env_access_key, client):
+    # pylint: disable=unused-argument
+    """ Test the rows get functionality which is really a find """
+
+    #happy path
+    with patch('service.resources.google_sheets.gspread.service_account') as mock_client:
+        obj1 = Mock()
+        obj1.row = 1
+        obj2 = Mock()
+        obj2.row = 2
+        mock_client.return_value.open_by_key.return_value.worksheet.return_value.findall.return_value = [   #pylint: disable=line-too-long
+            obj1,
+            obj2
+        ]
+        mock_client.return_value.open_by_key.return_value.worksheet.return_value.row_values.return_value = mocks.ROW_VALUES #pylint: disable=line-too-long
+
+        resp = client.simulate_get(
+            '/rows',
+            params=mocks.ROWS_GET_PARAMS
+        )
+        assert resp.status_code == 200
+
+    # value not found
+    with patch('service.resources.google_sheets.gspread.service_account') as mock_client:
+        mock_client.return_value.open_by_key.return_value.worksheet.return_value.findall.side_effect = gspread.exceptions.CellNotFound #pylint: disable=line-too-long
+        resp = client.simulate_get(
+            '/rows',
+            params=mocks.ROWS_GET_PARAMS
+        )
+        assert resp.status_code == 404
+
+    # generic error
+    with patch('service.resources.google_sheets.gspread.service_account') as mock_client:
+        mock_client.side_effect = Exception('Error in gspread')
+        resp = client.simulate_get(
+            '/rows',
+            params=mocks.ROWS_GET_PARAMS
         )
         assert resp.status_code == 500

@@ -4,7 +4,7 @@ import json
 import jsend
 import sentry_sdk
 import falcon
-from .resources.google_sheets import Rows
+from .resources.google_sheets import Rows, Row
 
 def start_service():
     """Start this service
@@ -14,7 +14,7 @@ def start_service():
     sentry_sdk.init(os.environ.get('SENTRY_DSN'))
     # Initialize Falcon
     api = falcon.API()
-    api.add_route('/rows/{row_id}', Rows())
+    api.add_route('/rows/{row_id}', Row())
     api.add_route('/rows', Rows())
     api.add_sink(default_error, '')
     return api
