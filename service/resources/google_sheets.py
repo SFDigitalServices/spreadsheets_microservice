@@ -62,11 +62,20 @@ class Rows():
             column_idx = gspread.utils.a1_to_rowcol(column + '1')[1]
             cells_found = worksheet.findall(value, in_column=column_idx)
             rows_ids = list(map(lambda cell: cell.row, cells_found))
-            rows_found = []
-            for row_id in rows_ids:
-                rows_found.append(worksheet.row_values(row_id))
+            last_col_idx = get_last_column_index(worksheet)
 
-            resp.body = json.dumps(rows_found)
+            ranges = []
+            for row_id in rows_ids:
+                ranges.append(
+                    gspread.utils.rowcol_to_a1(row_id, 1) +
+                    ':' +
+                    gspread.utils.rowcol_to_a1(row_id, last_col_idx)
+                )
+            rows_found = worksheet.batch_get(ranges)
+            # batch_get returns [[[a, b, c]], [[a, b, c]], [[a, b, c]]]
+            rows = [row[0] for row in rows_found]
+
+            resp.body = json.dumps(rows)
             resp.status = falcon.HTTP_200
         except gspread.exceptions.CellNotFound as err:
             print("{0}".format(err))
@@ -216,3 +225,10 @@ def validate_spreadsheet_params(params_json):
 
     if 'worksheet_title' not in params_json:
         raise Exception(ERR_MISSING_WORKSHEET_TITLE)
+
+def get_last_column_index(worksheet):
+    """
+        return index of the last column
+    """
+    row = worksheet.row_values(1)
+    return len(row)

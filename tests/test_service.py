@@ -195,6 +195,7 @@ def test_google_sheet_rows_get(mock_env_access_key, client):
             obj2
         ]
         mock_client.return_value.open_by_key.return_value.worksheet.return_value.row_values.return_value = mocks.ROW_VALUES #pylint: disable=line-too-long
+        mock_client.return_value.open_by_key.return_value.worksheet.return_value.batch_get.return_value = mocks.BATCH_GET #pylint: disable=line-too-long
 
         resp = client.simulate_get(
             '/rows',
