@@ -27,6 +27,11 @@ ROW_GET_PARAMS = {
 
 ROW_VALUES = ['A', 'B', 'C', 'D', 'E']
 
+BATCH_GET = [
+    [['A', 'B', 'C', 'D', 'E']],
+    [['A', 'B', 'C', 'D', 'E']]
+]
+
 ROWS_GET_PARAMS = {
     "spreadsheet_key": "1234567",
     "worksheet_title": "Tab1",
