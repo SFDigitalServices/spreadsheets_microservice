@@ -61,6 +61,9 @@ class Rows():
 
             column_idx = gspread.utils.a1_to_rowcol(column + '1')[1]
             cells_found = worksheet.findall(value, in_column=column_idx)
+            if len(cells_found) == 0:
+                raise gspread.exceptions.CellNotFound
+
             rows_ids = list(map(lambda cell: cell.row, cells_found))
             last_col_idx = get_last_column_index(worksheet)
 

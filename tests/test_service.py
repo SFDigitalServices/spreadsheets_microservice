@@ -205,7 +205,7 @@ def test_google_sheet_rows_get(mock_env_access_key, client):
 
     # value not found
     with patch('service.resources.google_sheets.gspread.service_account') as mock_client:
-        mock_client.return_value.open_by_key.return_value.worksheet.return_value.findall.side_effect = gspread.exceptions.CellNotFound #pylint: disable=line-too-long
+        mock_client.return_value.open_by_key.return_value.worksheet.return_value.findall.return_value = [] #pylint: disable=line-too-long
         resp = client.simulate_get(
             '/rows',
             params=mocks.ROWS_GET_PARAMS
