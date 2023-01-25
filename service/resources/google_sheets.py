@@ -1,5 +1,5 @@
 """Google Sheets module"""
-#pylint: disable=too-few-public-methods
+#pylint: disable=too-few-public-methods,invalid-name
 import os
 import json
 import traceback
@@ -8,7 +8,6 @@ import jsend
 import gspread
 from .hooks import validate_access
 
-CREDENTIALS_FILE = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
 ERR_MISSING_SPREADSHEET_KEY = 'Missing spreadsheet_key parameter in request'
 ERR_MISSING_WORKSHEET_TITLE = 'Missing worksheet_title parameter in request'
 ERR_MISSING_ID_COLUMN_LABEL = 'Missing id_column_label parameter in request'
@@ -218,7 +217,8 @@ def process_error(err, resp, params):
 
 def get_spreadsheet(spreadsheet_key, worksheet):
     """ returns the specified worksheet """
-    gc = gspread.service_account(filename=CREDENTIALS_FILE) # pylint: disable=invalid-name
+    gc = gspread.service_account(
+        filename=os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
     return gc.open_by_key(spreadsheet_key).worksheet(worksheet)
 
 def validate_spreadsheet_params(params_json):
